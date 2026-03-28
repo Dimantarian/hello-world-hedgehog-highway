@@ -1,0 +1,12 @@
+bundle:
+  name: hedgehog-highway
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      profile: DEFAULT

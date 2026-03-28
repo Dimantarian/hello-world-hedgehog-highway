@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Hedgehog Highway</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas" width="320" height="480"></canvas>
+
+        <div id="hud">
+            <div id="hud-score">SCORE: <span id="score-val">0</span></div>
+            <div id="hud-lives"></div>
+            <div id="hud-timer">TIME: <span id="timer-val">45</span></div>
+        </div>
+
+        <div id="title-screen" class="overlay">
+            <h1>HEDGEHOG<br>HIGHWAY</h1>
+            <p class="subtitle">A DEFRA Conservation Simulator</p>
+            <p class="tagline">No hedgehogs were harmed in the<br>making of this game.<br>Unlike on the A303.</p>
+            <p class="blink">PRESS SPACE TO START</p>
+            <p class="touch-hint">or tap to play</p>
+        </div>
+
+        <div id="death-screen" class="overlay hidden">
+            <p id="death-message" class="death-msg"></p>
+        </div>
+
+        <div id="victory-screen" class="overlay hidden">
+            <p id="victory-message" class="victory-msg"></p>
+        </div>
+
+        <div id="gameover-screen" class="overlay hidden">
+            <h2>GAME OVER</h2>
+            <p id="go-hedgehogs-saved"></p>
+            <p id="go-final-score"></p>
+            <p id="go-high-score"></p>
+            <p id="go-message" class="go-quip"></p>
+            <p class="blink">PRESS SPACE TO TRY AGAIN</p>
+        </div>
+
+        <div id="mobile-controls" class="hidden">
+            <button class="dpad-btn" id="btn-up" aria-label="Up">&#9650;</button>
+            <div class="dpad-row">
+                <button class="dpad-btn" id="btn-left" aria-label="Left">&#9664;</button>
+                <button class="dpad-btn" id="btn-right" aria-label="Right">&#9654;</button>
+            </div>
+            <button class="dpad-btn" id="btn-down" aria-label="Down">&#9660;</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='game.js') }}"></script>
+</body>
+</html>

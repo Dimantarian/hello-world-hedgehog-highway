@@ -1,0 +1,6 @@
+resources:
+  apps:
+    hedgehog_highway:
+      name: hedgehog-highway-${bundle.target}
+      description: "Hedgehog Highway - A DEFRA Conservation Simulator"
+      source_code_path: ../src/app
