@@ -1,17 +1,27 @@
 import os
 import psycopg2
 from flask import Flask, render_template, request, jsonify
+from databricks.sdk.core import Config
 
 app = Flask(__name__)
 
 
 def get_db():
+    host = os.getenv("PGHOST")
+    if not host:
+        raise RuntimeError("No PGHOST configured")
+
+    # Generate OAuth token via Databricks SDK (service principal auth)
+    cfg = Config()
+    token = cfg.authenticate().get("Authorization", "").replace("Bearer ", "")
+
     return psycopg2.connect(
-        host=os.getenv("PGHOST"),
-        database=os.getenv("PGDATABASE"),
+        host=host,
+        database=os.getenv("PGDATABASE", "hedgehog"),
         user=os.getenv("PGUSER"),
-        password=os.getenv("PGPASSWORD"),
+        password=token,
         port=os.getenv("PGPORT", "5432"),
+        sslmode=os.getenv("PGSSLMODE", "require"),
     )
 
 
@@ -43,6 +53,7 @@ def init_db():
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 
 @app.route("/api/scores", methods=["GET"])

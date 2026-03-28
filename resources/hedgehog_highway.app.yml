@@ -4,3 +4,9 @@ resources:
       name: hedgehog-highway-${bundle.target}
       description: "Hedgehog Highway - A DEFRA Conservation Simulator"
       source_code_path: ../src/app
+      resources:
+        - name: database
+          database:
+            instance_name: hedgehog-scores
+            database_name: hedgehog
+            permission: CAN_CONNECT_AND_CREATE
