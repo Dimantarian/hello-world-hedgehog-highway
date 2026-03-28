@@ -22,6 +22,10 @@
             <h1>HEDGEHOG<br>HIGHWAY</h1>
             <p class="subtitle">A DEFRA Conservation Simulator</p>
             <p class="tagline">No hedgehogs were harmed in the<br>making of this game.<br>Unlike on the A303.</p>
+            <div id="username-input">
+                <label for="username-field" class="username-label">ENTER YOUR NAME:</label>
+                <input type="text" id="username-field" maxlength="12" placeholder="HEDGEHOG" autocomplete="off" spellcheck="false">
+            </div>
             <p class="blink">PRESS SPACE TO START</p>
             <p class="touch-hint">or tap to play</p>
         </div>
@@ -38,8 +42,11 @@
             <h2>GAME OVER</h2>
             <p id="go-hedgehogs-saved"></p>
             <p id="go-final-score"></p>
-            <p id="go-high-score"></p>
             <p id="go-message" class="go-quip"></p>
+            <div id="leaderboard">
+                <p class="lb-title">HIGH SCORES</p>
+                <div id="lb-entries"></div>
+            </div>
             <p class="blink">PRESS SPACE TO TRY AGAIN</p>
         </div>
 

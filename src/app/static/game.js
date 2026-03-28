@@ -84,6 +84,7 @@ let lastTime = 0;
 let timerAccum = 0;
 let audioCtx = null;
 let highestRow = CONFIG.ROWS - 1;
+let playerName = 'HEDGEHOG';
 
 function initState() {
     highestRow = CONFIG.ROWS - 1;
@@ -205,7 +206,8 @@ let touchStartX = 0, touchStartY = 0;
 function handleKeyDown(e) {
     initAudio();
     if (state.screen === 'TITLE') {
-        if (e.code === 'Space' || e.code === 'Enter') startGame();
+        if (document.activeElement === document.getElementById('username-field') && e.code !== 'Enter') return;
+        if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); startGame(); }
         return;
     }
     if (state.screen === 'GAME_OVER') {
@@ -279,6 +281,10 @@ function movePlayer(dir) {
 
 // --- GAME FLOW ---
 function startGame() {
+    const nameField = document.getElementById('username-field');
+    playerName = (nameField.value.trim() || 'HEDGEHOG').toUpperCase().slice(0, 12);
+    nameField.value = playerName;
+
     initState();
     state.screen = 'PLAYING';
     document.getElementById('title-screen').classList.add('hidden');
@@ -354,19 +360,42 @@ function reachSanctuary() {
 function gameOver() {
     state.screen = 'GAME_OVER';
     playGameOver();
-
-    if (state.score > state.highScore) {
-        state.highScore = state.score;
-        localStorage.setItem('hedgehogHighScore', state.highScore.toString());
-    }
-
     hideMessages();
-    const goScreen = document.getElementById('gameover-screen');
+
     document.getElementById('go-hedgehogs-saved').textContent = `Hedgehogs saved: ${Math.floor(state.score / 50)}`;
     document.getElementById('go-final-score').textContent = `Final score: ${state.score}`;
-    document.getElementById('go-high-score').textContent = `Best: ${state.highScore}`;
     document.getElementById('go-message').textContent = randomFrom(GAMEOVER_MESSAGES);
-    goScreen.classList.remove('hidden');
+    document.getElementById('lb-entries').innerHTML = '<p style="font-size:5px;color:#666">Loading...</p>';
+    document.getElementById('gameover-screen').classList.remove('hidden');
+
+    // Submit score then fetch leaderboard
+    submitScore(playerName, state.score, state.round).then(() => fetchLeaderboard());
+}
+
+function submitScore(username, score, round) {
+    return fetch('/api/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, score, round }),
+    }).catch(() => {});
+}
+
+function fetchLeaderboard() {
+    fetch('/api/scores')
+        .then(r => r.json())
+        .then(scores => {
+            const el = document.getElementById('lb-entries');
+            if (!scores.length) { el.innerHTML = '<p style="font-size:5px;color:#666">No scores yet!</p>'; return; }
+            el.innerHTML = scores.map((s, i) =>
+                `<div class="lb-row${s.username === playerName ? ' you' : ''}">` +
+                `<span class="lb-rank">${i + 1}.</span>` +
+                `<span class="lb-name">${s.username}</span>` +
+                `<span class="lb-score">${s.score}</span></div>`
+            ).join('');
+        })
+        .catch(() => {
+            document.getElementById('lb-entries').innerHTML = '<p style="font-size:5px;color:#666">Offline</p>';
+        });
 }
 
 // --- UPDATE ---
