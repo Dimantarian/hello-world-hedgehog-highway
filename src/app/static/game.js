@@ -2,6 +2,24 @@
 // HEDGEHOG HIGHWAY - A DEFRA Conservation Simulator
 // ============================================================
 
+// ============================================================
+// DEMO: Live coding changes for Daffra demo
+// ============================================================
+//
+// TWO CHANGES TO MAKE (search for "DEMO CHANGE" to find each one):
+//
+// DEMO CHANGE 1 — New hedgehog look (punk hedgehog with blue spikes)
+//   Find: drawPlayer()
+//   Action: Comment out the original body, uncomment the new one
+//
+// DEMO CHANGE 2 — Swap sheep for cows
+//   Find: LANE_DEFS row 7
+//   Action: Comment out the sheep line, uncomment the cow line
+//   (everything else — drawing, messages, sounds — swaps automatically)
+//
+// Then: commit, push, create PR, merge → auto-deploys!
+// ============================================================
+
 // --- CONFIG ---
 const CONFIG = {
     W: 320,
@@ -23,7 +41,9 @@ const LANE_DEFS = [
     { row: 4,  type: 'safe',  label: 'hedge' },
     { row: 5,  type: 'water', speed: 0.8, dir: 1,  sprites: ['log', 'lilypad'],          spawnRate: 0.015 },
     { row: 6,  type: 'safe',  label: 'hedge' },
+    // DEMO CHANGE 2: Comment out sheep line below, uncomment the cow line
     { row: 7,  type: 'farm',  speed: 0.6, dir: -1, sprites: ['sheep', 'sheep', 'sheep'], spawnRate: 0.014 },
+    // { row: 7,  type: 'farm',  speed: 0.5, dir: -1, sprites: ['cow', 'cow', 'cow'], spawnRate: 0.012 },
     { row: 8,  type: 'farm',  speed: 1.4, dir: 1,  sprites: ['combine'],                 spawnRate: 0.006 },
     { row: 9,  type: 'safe',  label: 'hedge' },
     { row: 10, type: 'road',  speed: 1.0, dir: -1, sprites: ['car_red', 'car_blue', 'tractor'],  spawnRate: 0.012 },
@@ -62,12 +82,19 @@ const VICTORY_MESSAGES = [
     "Natural England is delighted!",
 ];
 
+// DEMO CHANGE 2 (cont.): Also swap these messages if using cows
 const SHEEP_MESSAGES = [
     "You befriended a sheep! (+20)",
     "Baa-rilliant! (+20)",
     "The sheep is now your emotional support animal. (+20)",
     "Ewe made a friend! (+20)",
 ];
+// const SHEEP_MESSAGES = [
+//     "You befriended a cow! (+20)",
+//     "Moo-vellous! (+20)",
+//     "The cow is now your emotional support animal. (+20)",
+//     "An udder-ly great encounter! (+20)",
+// ];
 
 const GAMEOVER_MESSAGES = [
     "The Minister for the Environment has been notified.",
@@ -547,6 +574,7 @@ function getEntityWidth(type) {
         case 'royalmail': return 44;
         case 'landrover': return 44;
         case 'sheep': return 30;
+        case 'cow': return 36;
         case 'lilypad': return 32;
         case 'cyclist': return 28;
         default: return 36;
@@ -609,7 +637,7 @@ function checkCollisions() {
         if (e.row !== currentRow) return;
         if (!collides(pBox, e)) return;
 
-        if (e.type === 'sheep') {
+        if (e.type === 'sheep' || e.type === 'cow') {
             state.score += 20;
             updateScoreDisplay();
             playSheep();
@@ -788,6 +816,7 @@ function drawEntities() {
             case 'landrover': drawLandRover(e.x, e.y, e.speed > 0); break;
             case 'cyclist': drawCyclist(e.x, e.y, e.speed > 0); break;
             case 'sheep': drawSheep(e.x, e.y); break;
+            case 'cow': drawCow(e.x, e.y); break;
             case 'combine': drawCombine(e.x, e.y, e.speed > 0); break;
             case 'log': drawLog(e.x, e.y, e.w); break;
             case 'lilypad': drawLilypad(e.x, e.y); break;
@@ -808,12 +837,15 @@ function drawPlayer() {
         ctx.globalAlpha = 0.5;
     }
 
+    // DEMO CHANGE 1: Comment out "Original hedgehog" block below,
+    //                uncomment "Punk hedgehog" block beneath it
+
+    // --- Original hedgehog ---
     // Body
     ctx.fillStyle = flash ? '#fff' : '#8B6914';
     ctx.beginPath();
     ctx.ellipse(x + 14, y + 18, 12, 10, 0, 0, Math.PI * 2);
     ctx.fill();
-
     // Spikes
     ctx.fillStyle = flash ? '#ddd' : '#5a4510';
     const spikeOffset = p.animFrame * 2;
@@ -826,6 +858,27 @@ function drawPlayer() {
         ctx.lineTo(sx + 6, sy + 10);
         ctx.fill();
     }
+    // --- End original hedgehog ---
+
+    // --- Punk hedgehog (blue spikes, sunglasses) ---
+    // // Body
+    // ctx.fillStyle = flash ? '#fff' : '#8B6914';
+    // ctx.beginPath();
+    // ctx.ellipse(x + 14, y + 18, 12, 10, 0, 0, Math.PI * 2);
+    // ctx.fill();
+    // // Punk spikes (electric blue mohawk)
+    // ctx.fillStyle = flash ? '#aaf' : '#2255ff';
+    // const spikeOffset = p.animFrame * 2;
+    // for (let i = 0; i < 5; i++) {
+    //     const sx = x + 4 + i * 5 + spikeOffset;
+    //     const sy = y + 2;
+    //     ctx.beginPath();
+    //     ctx.moveTo(sx, sy + 12);
+    //     ctx.lineTo(sx + 3, sy);
+    //     ctx.lineTo(sx + 6, sy + 12);
+    //     ctx.fill();
+    // }
+    // --- End punk hedgehog ---
 
     // Face (direction-aware)
     const faceX = p.facing === 'left' ? x + 4 : (p.facing === 'right' ? x + 18 : x + 10);
@@ -987,6 +1040,47 @@ function drawSheep(x, y) {
     ctx.fillRect(x + 12, y + 24, 3, 6);
     ctx.fillRect(x + 18, y + 24, 3, 6);
     ctx.fillRect(x + 24, y + 24, 3, 6);
+}
+
+function drawCow(x, y) {
+    // Body
+    ctx.fillStyle = '#f5f5f0';
+    ctx.beginPath();
+    ctx.ellipse(x + 18, y + 16, 16, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Black patches
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.ellipse(x + 12, y + 14, 6, 5, 0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(x + 24, y + 18, 5, 4, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    // Head
+    ctx.fillStyle = '#f5f5f0';
+    ctx.fillRect(x, y + 10, 10, 12);
+    // Pink nose
+    ctx.fillStyle = '#ffaaaa';
+    ctx.fillRect(x, y + 16, 8, 6);
+    // Eyes
+    ctx.fillStyle = '#000';
+    ctx.fillRect(x + 2, y + 12, 2, 2);
+    ctx.fillRect(x + 6, y + 12, 2, 2);
+    // Horns
+    ctx.fillStyle = '#ddc';
+    ctx.fillRect(x + 1, y + 6, 2, 5);
+    ctx.fillRect(x + 7, y + 6, 2, 5);
+    // Legs
+    ctx.fillStyle = '#222';
+    ctx.fillRect(x + 8, y + 24, 3, 6);
+    ctx.fillRect(x + 14, y + 24, 3, 6);
+    ctx.fillRect(x + 22, y + 24, 3, 6);
+    ctx.fillRect(x + 28, y + 24, 3, 6);
+    // Udder
+    ctx.fillStyle = '#ffaaaa';
+    ctx.beginPath();
+    ctx.arc(x + 25, y + 25, 3, 0, Math.PI * 2);
+    ctx.fill();
 }
 
 function drawCombine(x, y, facingRight) {
