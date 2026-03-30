@@ -18,7 +18,7 @@ jobs:
         env:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
-      - name: Start app
-        run: databricks apps start hedgehog-highway-dev
+      - name: Deploy app source code
+        run: databricks apps deploy hedgehog-highway-dev --source-code-path src/app
         env:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
