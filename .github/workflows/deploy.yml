@@ -19,6 +19,6 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
       - name: Deploy app source code
-        run: databricks apps deploy hedgehog-highway-dev --source-code-path src/app
+        run: databricks apps deploy hedgehog-highway-dev --source-code-path /Workspace/Users/guydouglasbourne@gmail.com/.bundle/hedgehog-highway/dev/files/src/app
         env:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
