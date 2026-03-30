@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 # In-memory high scores list
 high_scores = []
+_next_id = 0
 
 
 @app.route("/")
@@ -20,18 +21,22 @@ def get_scores():
 
 @app.route("/api/scores", methods=["POST"])
 def post_score():
+    global _next_id
     data = request.get_json()
     username = (data.get("username") or "ANON")[:20]
     score = int(data.get("score", 0))
     round_num = int(data.get("round", 1))
 
-    high_scores.append({
+    _next_id += 1
+    entry = {
+        "id": _next_id,
         "username": username,
         "score": score,
         "round": round_num,
         "date": datetime.now().isoformat(),
-    })
-    return jsonify({"ok": True})
+    }
+    high_scores.append(entry)
+    return jsonify({"ok": True, "id": _next_id})
 
 
 if __name__ == "__main__":

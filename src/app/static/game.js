@@ -369,7 +369,7 @@ function gameOver() {
     document.getElementById('gameover-screen').classList.remove('hidden');
 
     // Submit score then fetch leaderboard
-    submitScore(playerName, state.score, state.round).then(() => fetchLeaderboard());
+    submitScore(playerName, state.score, state.round).then(myId => fetchLeaderboard(myId));
 }
 
 function submitScore(username, score, round) {
@@ -377,17 +377,20 @@ function submitScore(username, score, round) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, score, round }),
-    }).catch(() => {});
+    })
+    .then(r => r.json())
+    .then(data => data.id)
+    .catch(() => null);
 }
 
-function fetchLeaderboard() {
+function fetchLeaderboard(myId) {
     fetch('/api/scores')
         .then(r => r.json())
         .then(scores => {
             const el = document.getElementById('lb-entries');
             if (!scores.length) { el.innerHTML = '<p style="font-size:5px;color:#666">No scores yet!</p>'; return; }
             el.innerHTML = scores.map((s, i) =>
-                `<div class="lb-row${s.username === playerName ? ' you' : ''}">` +
+                `<div class="lb-row${s.id === myId ? ' you' : ''}">` +
                 `<span class="lb-rank">${i + 1}.</span>` +
                 `<span class="lb-name">${s.username}</span>` +
                 `<span class="lb-score">${s.score}</span></div>`
