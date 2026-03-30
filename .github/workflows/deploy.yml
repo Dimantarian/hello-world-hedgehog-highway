@@ -17,3 +17,8 @@ jobs:
         run: databricks bundle deploy --target dev
         env:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+      - name: Start app
+        run: databricks apps start hedgehog-highway-dev
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
