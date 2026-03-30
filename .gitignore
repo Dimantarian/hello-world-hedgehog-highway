@@ -1,0 +1,18 @@
+# Databricks
+.databricks/
+.ai-dev-kit/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# IDE
+.vscode/
+.cursor/
+
+# MCP config (contains local paths)
+.mcp.json
+
+# OS
+.DS_Store

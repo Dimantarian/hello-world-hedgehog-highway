@@ -129,6 +129,42 @@ body {
     margin-top: 8px;
 }
 
+/* Username input */
+#username-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.username-label {
+    font-size: 5px;
+    color: #8bc34a;
+    margin-bottom: 6px;
+}
+
+#username-field {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #ffd700;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #4a7c59;
+    border-radius: 2px;
+    padding: 6px 8px;
+    text-align: center;
+    width: 160px;
+    outline: none;
+    text-transform: uppercase;
+}
+
+#username-field::placeholder {
+    color: #555;
+}
+
+#username-field:focus {
+    border-color: #8bc34a;
+}
+
 /* Death screen */
 #death-screen {
     background: rgba(0, 0, 0, 0.7);
@@ -178,8 +214,52 @@ body {
 .go-quip {
     color: #999 !important;
     margin-top: 8px !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 12px !important;
     max-width: 260px;
+}
+
+/* Leaderboard */
+#leaderboard {
+    margin-bottom: 16px;
+    width: 260px;
+}
+
+.lb-title {
+    font-size: 7px !important;
+    color: #ffd700 !important;
+    margin-bottom: 6px !important;
+}
+
+#lb-entries {
+    text-align: left;
+}
+
+.lb-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 5px;
+    color: #aaa;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.lb-row.you {
+    color: #ffd700;
+}
+
+.lb-rank {
+    width: 20px;
+}
+
+.lb-name {
+    flex: 1;
+    text-align: left;
+    margin-left: 4px;
+}
+
+.lb-score {
+    width: 50px;
+    text-align: right;
 }
 
 /* Mobile controls */

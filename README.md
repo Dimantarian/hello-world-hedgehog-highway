@@ -258,6 +258,17 @@ env:
 
 The `valueFrom` pattern lets you reference Databricks resources without hardcoding IDs.
 
+### Exercise 5: Add a Database with Lakebase
+
+This is a bigger exercise with its own dedicated guide. Follow **[docs/adding-lakebase.md](docs/adding-lakebase.md)** to:
+
+- Create a Lakebase (managed PostgreSQL) instance
+- Add a high scores table
+- Connect the app to the database via the DAB resource system
+- Handle authentication using OAuth and the Databricks SDK
+
+This exercise demonstrates how to go from a static app to one backed by a real database - a common next step for any Databricks App.
+
 ---
 
 ## Common Commands Reference
