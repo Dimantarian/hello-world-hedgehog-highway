@@ -91,6 +91,7 @@ function initState() {
     state = {
         screen: 'TITLE',
         score: 0,
+        hedgehogsSaved: 0,
         highScore: parseInt(localStorage.getItem('hedgehogHighScore') || '0'),
         lives: CONFIG.INITIAL_LIVES,
         timeRemaining: CONFIG.ROUND_TIME,
@@ -329,6 +330,7 @@ function reachSanctuary() {
     state.victoryTimer = 120;
     playVictory();
 
+    state.hedgehogsSaved++;
     const timeBonus = state.timeRemaining * 3;
     state.score += 50 + timeBonus;
     updateScoreDisplay();
@@ -362,7 +364,7 @@ function gameOver() {
     playGameOver();
     hideMessages();
 
-    document.getElementById('go-hedgehogs-saved').textContent = `Hedgehogs saved: ${Math.floor(state.score / 50)}`;
+    document.getElementById('go-hedgehogs-saved').textContent = `Hedgehogs saved: ${state.hedgehogsSaved}`;
     document.getElementById('go-final-score').textContent = `Final score: ${state.score}`;
     document.getElementById('go-message').textContent = randomFrom(GAMEOVER_MESSAGES);
     document.getElementById('lb-entries').innerHTML = '<p style="font-size:5px;color:#666">Loading...</p>';
@@ -389,12 +391,24 @@ function fetchLeaderboard(myId) {
         .then(scores => {
             const el = document.getElementById('lb-entries');
             if (!scores.length) { el.innerHTML = '<p style="font-size:5px;color:#666">No scores yet!</p>'; return; }
-            el.innerHTML = scores.map((s, i) =>
+            let html = scores.map((s, i) =>
                 `<div class="lb-row${s.id === myId ? ' you' : ''}">` +
                 `<span class="lb-rank">${i + 1}.</span>` +
                 `<span class="lb-name">${s.username}</span>` +
                 `<span class="lb-score">${s.score}</span></div>`
             ).join('');
+            // If player's score didn't make top 10, show it below with a separator
+            if (myId && !scores.find(s => s.id === myId)) {
+                html += '<div class="lb-row" style="border-top:1px solid rgba(255,255,255,0.2);margin-top:4px;padding-top:4px">' +
+                    '<span class="lb-rank" style="color:#666">...</span>' +
+                    '<span class="lb-name" style="color:#666"></span>' +
+                    '<span class="lb-score" style="color:#666"></span></div>';
+                html += `<div class="lb-row you">` +
+                    `<span class="lb-rank">--</span>` +
+                    `<span class="lb-name">${playerName}</span>` +
+                    `<span class="lb-score">${state.score}</span></div>`;
+            }
+            el.innerHTML = html;
         })
         .catch(() => {
             document.getElementById('lb-entries').innerHTML = '<p style="font-size:5px;color:#666">Offline</p>';
