@@ -9,9 +9,4 @@ targets:
     default: true
     mode: development
     workspace:
-      host: ${var.databricks_host}
-
-variables:
-  databricks_host:
-    description: Databricks workspace URL
-    default: https://fevm-serverless-j71s4d.cloud.databricks.com
+      host: https://fevm-serverless-j71s4d.cloud.databricks.com
