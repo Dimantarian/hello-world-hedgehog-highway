@@ -9,4 +9,4 @@ targets:
     default: true
     mode: development
     workspace:
-      host: https://fevm-serverless-j71s4d.cloud.databricks.com
+      host: https://dbc-d48e09b1-fa7f.cloud.databricks.com/
